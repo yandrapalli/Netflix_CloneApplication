@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Clone</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/c939d0e917.js" crossorigin="anonymous"></script>
+    <!-- Placeholder for icons, relying on fontawesome or similar if user had key, but I'll use text/svgs if needed or standard free CDNs -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app">
+        <!-- Navbar -->
+        <div class="nav" id="nav">
+            <div class="nav__left">
+                <img class="nav__logo" src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg"
+                    alt="Netflix Logo">
+                <ul class="nav__links">
+                    <li class="active">Home</li>
+                    <li>TV Shows</li>
+                    <li>Movies</li>
+                    <li>New & Popular</li>
+                    <li>My List</li>
+                </ul>
+            </div>
+            <div class="nav__right">
+                <div class="nav__search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Titles, people, genres">
+                </div>
+                <i class="fas fa-bell"></i>
+                <img class="nav__avatar" src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png"
+                    alt="User Avatar">
+            </div>
+        </div>
+
+        <!-- Banner -->
+        <header class="banner" id="banner">
+            <div class="banner__contents">
+                <h1 class="banner__title" id="banner-title">Loading...</h1>
+                <div class="banner__buttons">
+                    <button class="banner__button play"><i class="fas fa-play"></i> Play</button>
+                    <button class="banner__button info"><i class="fas fa-info-circle"></i> More Info</button>
+                </div>
+                <h1 class="banner__description" id="banner-description">
+                    Fetching latest hit movies...
+                </h1>
+            </div>
+            <div class="banner--fadeBottom"></div>
+        </header>
+
+        <!-- Rows -->
+        <main id="main-content">
+            <div id="search-results-container"></div>
+            <!-- Rows will be populated by JS -->
+        </main>
+
+        <!-- Movie Details Modal -->
+        <div id="movie-modal" class="modal">
+            <div class="modal__content">
+                <span class="modal__close">&times;</span>
+                <div class="modal__banner" id="modal-banner"></div>
+                <div class="modal__info">
+                    <h2 id="modal-title">Movie Title</h2>
+                    <p id="modal-date">Release Date</p>
+                    <p id="modal-overview">Movie overview goes here...</p>
+                    <button class="banner__button play" id="modal-play"><i class="fas fa-play"></i> Watch
+                        Trailer</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer__socials">
+                <i class="fab fa-facebook-f"></i>
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-twitter"></i>
+                <i class="fab fa-youtube"></i>
+            </div>
+            <div class="footer__links">
+                <ul>
+                    <li>Audio Description</li>
+                    <li>Help Center</li>
+                    <li>Gift Cards</li>
+                    <li>Media Center</li>
+                    <li>Investor Relations</li>
+                    <li>Jobs</li>
+                    <li>Terms of Use</li>
+                    <li>Privacy</li>
+                    <li>Legal Notices</li>
+                    <li>Cookie Preferences</li>
+                    <li>Corporate Information</li>
+                    <li>Contact Us</li>
+                </ul>
+            </div>
+            <div class="footer__copyright">
+                &copy; 1997-2025 Netflix Clone Educational Project
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
