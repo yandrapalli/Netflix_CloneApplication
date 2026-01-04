@@ -500,8 +500,8 @@ body {
 }
 
 .modal__banner {
-    height: 300px;
     width: 100%;
+    aspect-ratio: 16 / 9;
     background-size: cover;
     background-position: center;
     position: relative;

@@ -90,7 +90,25 @@ function createMovieItem(movie, isLargeRow, isSearch = false) {
     return container;
 }
 
-// --- educational-comment: Modal Logic ---
+// --- Helper to fetch video ---
+async function fetchVideo(movie) {
+    try {
+        const type = movie.media_type === 'tv' || (!movie.media_type && movie.name) ? 'tv' : 'movie';
+        const response = await fetch(`${BASE_URL}/${type}/${movie.id}/videos?api_key=${API_KEY}&language=en-US`);
+        const data = await response.json();
+
+        if (data.results) {
+            const trailer = data.results.find(vid => vid.site === "YouTube" && (vid.type === "Trailer" || vid.type === "Teaser"));
+            return trailer ? trailer.key : data.results[0]?.key;
+        }
+        return null;
+    } catch (error) {
+        console.error("Error fetching video:", error);
+        return null;
+    }
+}
+
+// --- Educational-comment: Modal Logic ---
 // 2025 Standard: Modals should be accessible and animated.
 const modal = document.getElementById("movie-modal");
 const modalClose = document.getElementsByClassName("modal__close")[0];
@@ -103,6 +121,9 @@ const modalPlay = document.getElementById("modal-play");
 function openModal(movie) {
     modal.style.display = "block";
 
+    // Reset banner content (remove previous iframe if any)
+    modalBanner.innerHTML = '';
+
     // Set content
     const backdrop = movie.backdrop_path || movie.poster_path;
     modalBanner.style.backgroundImage = backdrop ? `url("${IMAGE_BASE_URL}${backdrop}")` : 'none';
@@ -110,32 +131,64 @@ function openModal(movie) {
     modalDate.innerText = `Release: ${movie.first_air_date || movie.release_date || 'N/A'}`;
     modalOverview.innerText = movie.overview || "No overview available.";
 
-    // Trailer logic (Educational simplified version)
-    modalPlay.onclick = () => {
-        // Open YouTube search for the trailer since we don't have the exact video ID readily available without another call
-        const query = `${movie.name || movie.title} trailer`;
-        window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`, '_blank');
+    // Trailer logic (Embedded)
+    modalPlay.onclick = async () => {
+        modalPlay.disabled = true;
+        modalPlay.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+
+        const videoKey = await fetchVideo(movie);
+
+        modalPlay.disabled = false;
+        modalPlay.innerHTML = '<i class="fas fa-play"></i> Watch Trailer';
+
+        if (videoKey) {
+            // Embed YouTube iframe
+            modalBanner.innerHTML = `
+                <iframe 
+                    width="100%" 
+                    height="100%" 
+                    src="https://www.youtube.com/embed/${videoKey}?autoplay=1&rel=0" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                </iframe>
+            `;
+            // Clear background image so it doesn't interfere (though iframe covers it)
+            modalBanner.style.backgroundImage = 'none';
+        } else {
+            // Fallback if no video found
+            alert("Sorry, no trailer available for this title.");
+        }
     };
+}
+
+function closeModal() {
+    modal.style.display = "none";
+    modalBanner.innerHTML = ''; // Stop video
+    const currentVideo = modalBanner.querySelector('iframe');
+    if (currentVideo) {
+        currentVideo.src = ''; // Force stop
+    }
 }
 
 // Close modal when clicking (x)
 if (modalClose) {
-    modalClose.onclick = function () {
-        modal.style.display = "none";
-    }
+    modalClose.onclick = closeModal;
 }
 
 // Close modal when clicking outside of it
 window.onclick = function (event) {
     if (event.target == modal) {
-        modal.style.display = "none";
+        closeModal();
     }
 }
 
 // Close on Escape key (Accessibility)
 document.addEventListener('keydown', function (event) {
     if (event.key === "Escape" && modal && modal.style.display === "block") {
-        modal.style.display = "none";
+        closeModal();
     }
 });
 
